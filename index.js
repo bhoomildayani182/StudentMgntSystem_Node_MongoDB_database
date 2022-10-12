@@ -4,7 +4,9 @@ require('./config')
 const Student = require('./Student')
 const app = express();
 const connectToMongo = require*('./db')
+const cors = require('cors')
 
+app.use(cors())
 app.use(express.json()) // req to get data to convert to json data
 app.post("/student",async(req, res)=>{
     let data = new Student(req.body)
@@ -33,13 +35,16 @@ app.delete("/student/:id", async(req, res)=>{
     res.send(data)
 });
 app.put("/student/:id", async(req, res)=>{
+  try{
     console.log(req.params)
     let data = await Student.updateOne(
-        req.params,
+        {"id": req.params.id},
         {$set: req.body}
     );
-    res.send(data)
+    console.log(req.params, data, )
+    res.status(201).send(data)
+  }catch (e) {
+    print(e);
+ }
 });
-app.listen(8080),()=>{
-    console.log("Your backend start on port 8080");
-};
+app.listen(8080)
